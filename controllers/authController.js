@@ -44,7 +44,30 @@ exports.registerUser = async (req, res) => {
 };
 
 // Login User
-exports.loginUser = async (req, res) => {};
+exports.loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  // Validation: Check for missing fields
+  if (!email || !password) {
+    return res.status(400).json({ message: "All fields are required!" });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user || !(await user.comparePassword(password))) {
+      return res.status(400).json({ message: "Invalid credentials!" });
+    }
+
+    res.status(200).json({
+      id: user._id,
+      user,
+      token: generateToken(user._id),
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error login user", error: error.message });
+  }
+};
 
 // Get User
 exports.getUserInfo = async (req, res) => {};
