@@ -7,6 +7,9 @@ const {
   getUserInfo,
 } = require("../controllers/authController");
 
+const upload = require("../middleware/uploadMiddleware");
+const { uploadImage } = require("../controllers/uploadController");
+
 const router = express.Router();
 
 router.post("/register", registerUser);
@@ -14,5 +17,7 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 
 router.get("/getUser", protect, getUserInfo);
+
+router.post("/upload-image", upload.single("image"), uploadImage);
 
 module.exports = router;
