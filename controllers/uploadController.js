@@ -1,4 +1,4 @@
-exports.uploadImage = (req, res) => {
+exports.uploadImage = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({
@@ -6,11 +6,9 @@ exports.uploadImage = (req, res) => {
       });
     }
 
-    const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
-
     return res.status(200).json({
       message: "Image uploaded successfully",
-      imageUrl,
+      imageUrl: req.file.path, // Cloudinary URL
     });
   } catch (error) {
     console.error(error);
