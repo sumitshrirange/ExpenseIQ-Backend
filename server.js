@@ -10,13 +10,26 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 
 const app = express();
 
-// Middleware to handle CORS
+// Middleware
+const allowedOrigins = ["http://localhost:5173"];
+if (process.env.CLIENT_URL) {
+  allowedOrigins.push(process.env.CLIENT_URL);
+}
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: allowedOrigins,
     credentials: true,
+  }),
+);
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: process.env.NODE_ENV === "production" ? true : false,
+    },
   }),
 );
 
